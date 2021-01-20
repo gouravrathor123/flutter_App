@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_app/views/Owner/SignupOwner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// ignore: must_be_immutable
 class OtpOwner extends StatefulWidget {
   String value;
   OtpOwner({this.value});
@@ -13,14 +14,16 @@ class OtpOwner extends StatefulWidget {
 class _OtpOwnerState extends State<OtpOwner> {
   bool _isLoading = false;
   String value;
+  String phone;
   _OtpOwnerState(this.value);
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
         .copyWith(statusBarColor: Colors.transparent));
+    phone = value;
     return Scaffold(
       appBar: AppBar(
-        title: Text(value),
+        title: Text("OTP verification"),
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -78,7 +81,7 @@ class _OtpOwnerState extends State<OtpOwner> {
     if (otp == "123") {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
-              builder: (BuildContext context) => SignUpOwner(value: value)),
+              builder: (BuildContext context) => SignUpOwner(phone: phone)),
           (Route<dynamic> route) => false);
     }
   }

@@ -48,7 +48,6 @@ class _PhoneOwnerState extends State<PhoneOwner> {
   }
 
   getOTP(String phone) async {
-    print('Goran Rather');
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonResponse = null;
 
@@ -125,7 +124,7 @@ class _PhoneOwnerState extends State<PhoneOwner> {
             style: TextStyle(color: Colors.white70),
             decoration: InputDecoration(
               icon: Icon(Icons.phone, color: Colors.white70),
-              hintText: "Password",
+              hintText: "Phone",
               border: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white70)),
               hintStyle: TextStyle(color: Colors.white70),

@@ -1,31 +1,39 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'SignUpSubmitOwner.dart';
+import 'package:flutter_app/views/Owner/LoginOwner.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
-class SignUpOwner extends StatefulWidget {
-  String phone;
-  SignUpOwner({this.phone});
+class SignUpSubmitOwner extends StatefulWidget {
+  String firstName, lastName, email, pass, dob, phonee;
+  SignUpSubmitOwner(
+      {this.firstName,
+      this.lastName,
+      this.email,
+      this.pass,
+      this.dob,
+      this.phonee});
   @override
-  _SignUpOwnerState createState() => _SignUpOwnerState(phone);
+  _SignUpSubmitOwnerState createState() =>
+      _SignUpSubmitOwnerState(firstName, lastName, email, pass, dob, phonee);
 }
 
-class _SignUpOwnerState extends State<SignUpOwner> {
+class _SignUpSubmitOwnerState extends State<SignUpSubmitOwner> {
   bool _isLoading = false;
-  String phone;
-  // ignore: non_constant_identifier_names
   String firstName, lastName, email, pass, dob, phonee;
-  _SignUpOwnerState(this.phone);
+  _SignUpSubmitOwnerState(this.firstName, this.lastName, this.email, this.pass,
+      this.dob, this.phonee);
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
         .copyWith(statusBarColor: Colors.transparent));
-    phonee = phone;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Personal Details"),
+        title: Text("Company Details"),
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -51,11 +59,11 @@ class _SignUpOwnerState extends State<SignUpOwner> {
     );
   }
 
-  final TextEditingController firstnameController = new TextEditingController();
-  final TextEditingController lastnameController = new TextEditingController();
-  final TextEditingController emailController = new TextEditingController();
-  final TextEditingController passwordController = new TextEditingController();
-  final TextEditingController dobController = new TextEditingController();
+  final TextEditingController CINController = new TextEditingController();
+  final TextEditingController indutryController = new TextEditingController();
+  final TextEditingController addressController = new TextEditingController();
+  final TextEditingController companynameController =
+      new TextEditingController();
 
   Container textSection() {
     return Container(
@@ -64,15 +72,12 @@ class _SignUpOwnerState extends State<SignUpOwner> {
         children: <Widget>[
           SizedBox(height: 30.0),
           TextFormField(
-            controller: firstnameController,
+            controller: companynameController,
             cursorColor: Colors.white,
-            onChanged: (text) {
-              firstName = text;
-            },
             style: TextStyle(color: Colors.white70),
             decoration: InputDecoration(
-              icon: Icon(Icons.create, color: Colors.white70),
-              hintText: "First Name",
+              icon: Icon(Icons.create_outlined, color: Colors.white70),
+              hintText: "Company Name",
               border: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white70)),
               hintStyle: TextStyle(color: Colors.white70),
@@ -80,16 +85,12 @@ class _SignUpOwnerState extends State<SignUpOwner> {
           ),
           SizedBox(height: 20),
           TextFormField(
-            controller: lastnameController,
+            controller: indutryController,
             cursorColor: Colors.white,
-            obscureText: true,
-            onChanged: (text) {
-              lastName = text;
-            },
             style: TextStyle(color: Colors.white70),
             decoration: InputDecoration(
-              icon: Icon(Icons.create, color: Colors.white70),
-              hintText: "Last Name",
+              icon: Icon(Icons.home_repair_service, color: Colors.white70),
+              hintText: "Industry",
               border: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white70)),
               hintStyle: TextStyle(color: Colors.white70),
@@ -97,15 +98,12 @@ class _SignUpOwnerState extends State<SignUpOwner> {
           ),
           SizedBox(height: 20),
           TextFormField(
-            controller: emailController,
+            controller: CINController,
             cursorColor: Colors.white,
             style: TextStyle(color: Colors.white70),
-            onChanged: (text) {
-              email = text;
-            },
             decoration: InputDecoration(
-              icon: Icon(Icons.email, color: Colors.white70),
-              hintText: "Email",
+              icon: Icon(Icons.code, color: Colors.white70),
+              hintText: "CIN",
               border: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white70)),
               hintStyle: TextStyle(color: Colors.white70),
@@ -113,32 +111,12 @@ class _SignUpOwnerState extends State<SignUpOwner> {
           ),
           SizedBox(height: 20),
           TextFormField(
-            controller: passwordController,
+            controller: addressController,
             cursorColor: Colors.white,
-            obscureText: true,
-            onChanged: (text) {
-              pass = text;
-            },
             style: TextStyle(color: Colors.white70),
             decoration: InputDecoration(
-              icon: Icon(Icons.lock, color: Colors.white70),
-              hintText: "Password",
-              border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70)),
-              hintStyle: TextStyle(color: Colors.white70),
-            ),
-          ),
-          SizedBox(height: 20),
-          TextFormField(
-            controller: dobController,
-            cursorColor: Colors.white,
-            onChanged: (text) {
-              dob = text;
-            },
-            style: TextStyle(color: Colors.white70),
-            decoration: InputDecoration(
-              icon: Icon(Icons.date_range, color: Colors.white70),
-              hintText: "Date of Birth",
+              icon: Icon(Icons.home_work_outlined, color: Colors.white70),
+              hintText: "Address",
               border: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white70)),
               hintStyle: TextStyle(color: Colors.white70),
@@ -158,31 +136,21 @@ class _SignUpOwnerState extends State<SignUpOwner> {
       margin: EdgeInsets.only(top: 15.0),
       child: RaisedButton(
         // ignore: unrelated_type_equality_checks
-        onPressed: firstnameController == "" ||
+        onPressed: companynameController == "" ||
                 // ignore: unrelated_type_equality_checks
-                lastnameController == "" ||
+                addressController == "" ||
                 // ignore: unrelated_type_equality_checks
-                emailController == "" ||
+                CINController == "" ||
                 // ignore: unrelated_type_equality_checks
-                passwordController == "" ||
-                // ignore: unrelated_type_equality_checks
-                dobController == ""
+                indutryController == ""
             ? null
             : () {
                 setState(() {
                   _isLoading = true;
                 });
 
-                Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => SignUpSubmitOwner(
-                            firstName: firstName,
-                            lastName: lastName,
-                            email: email,
-                            pass: pass,
-                            dob: dob,
-                            phonee: phonee)),
-                    (Route<dynamic> route) => false);
+                signUp(companynameController.text, indutryController.text,
+                    CINController.text, addressController.text);
               },
         elevation: 0.0,
         color: Colors.purple,
@@ -191,5 +159,50 @@ class _SignUpOwnerState extends State<SignUpOwner> {
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(500.0)),
       ),
     );
+  }
+
+  // ignore: non_constant_identifier_names
+  signUp(
+      String companyName, String industry, String CIN, String address) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var jsonResponse = null;
+
+    var response = await http.post(
+      "http://192.168.5.59:3005/owner",
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        "first_name": firstName,
+        "last_name": lastName,
+        "date_of_birth": dob,
+        "email": email,
+        "phone": phonee,
+        "password": pass,
+        "company_name": companyName,
+        "industry": industry,
+        "CIN": CIN,
+        "address": address
+      }),
+    );
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      if (jsonResponse != null) {
+        setState(() {
+          _isLoading = false;
+        });
+        sharedPreferences.setString("token", jsonResponse['token']);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (BuildContext context) => LoginOwner()),
+            (Route<dynamic> route) => false);
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      print(response.body);
+    }
   }
 }

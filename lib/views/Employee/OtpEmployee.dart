@@ -1,27 +1,30 @@
-import 'dart:convert';
-
+// ignore: must_be_immutable
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_app/views/Employee/OtpEmployee.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_app/views/Employee/SignupEmployee.dart';
 
-class PhoneEmployee extends StatefulWidget {
+// ignore: must_be_immutable
+class OtpEmployee extends StatefulWidget {
+  String value;
+  OtpEmployee({this.value});
   @override
-  _PhoneEmployeeState createState() => _PhoneEmployeeState();
+  _OtpEmployeeState createState() => _OtpEmployeeState(value);
 }
 
-class _PhoneEmployeeState extends State<PhoneEmployee> {
+class _OtpEmployeeState extends State<OtpEmployee> {
   bool _isLoading = false;
   String value;
+  String phone;
+  _OtpEmployeeState(this.value);
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
         .copyWith(statusBarColor: Colors.transparent));
+    phone = value;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Phone Checking"),
+        title: Text("OTP verification"),
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -47,39 +50,6 @@ class _PhoneEmployeeState extends State<PhoneEmployee> {
     );
   }
 
-  getOTP(String phone) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var jsonResponse = null;
-
-    var response = await http.post(
-      "http://192.168.5.59:3005/employee/check",
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{'phone': phone}),
-    );
-    if (response.statusCode == 200) {
-      jsonResponse = json.decode(response.body);
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      if (jsonResponse != null) {
-        setState(() {
-          _isLoading = false;
-        });
-        sharedPreferences.setString("token", jsonResponse['token']);
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-                builder: (BuildContext context) => OtpEmployee(value: value)),
-            (Route<dynamic> route) => false);
-      }
-    } else {
-      setState(() {
-        _isLoading = false;
-      });
-      print(response.body);
-    }
-  }
-
   Container buttonSection() {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -88,24 +58,33 @@ class _PhoneEmployeeState extends State<PhoneEmployee> {
       margin: EdgeInsets.only(top: 15.0),
       child: RaisedButton(
         // ignore: unrelated_type_equality_checks
-        onPressed: phoneController == ""
+        onPressed: otpController == ""
             ? null
             : () {
                 setState(() {
                   _isLoading = true;
                 });
-                getOTP(phoneController.text);
+                getOTP(otpController.text);
               },
         elevation: 0.0,
         color: Colors.purple,
-        child: Text("Get OTP", style: TextStyle(color: Colors.white70)),
+        child: Text("Verify", style: TextStyle(color: Colors.white70)),
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(500.0)),
       ),
     );
   }
 
-  final TextEditingController phoneController = new TextEditingController();
+  final TextEditingController otpController = new TextEditingController();
+
+  getOTP(String otp) async {
+    if (otp == "123") {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+              builder: (BuildContext context) => SignUpEmployee(phonee: phone)),
+          (Route<dynamic> route) => false);
+    }
+  }
 
   Container textSection() {
     return Container(
@@ -114,17 +93,13 @@ class _PhoneEmployeeState extends State<PhoneEmployee> {
         children: <Widget>[
           SizedBox(height: 30.0),
           TextFormField(
-            controller: phoneController,
-            autofocus: false,
+            controller: otpController,
             cursorColor: Colors.white,
-            onChanged: (text) {
-              value = text;
-            },
             obscureText: true,
             style: TextStyle(color: Colors.white70),
             decoration: InputDecoration(
               icon: Icon(Icons.phone, color: Colors.white70),
-              hintText: "Phone",
+              hintText: "OTP",
               border: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white70)),
               hintStyle: TextStyle(color: Colors.white70),

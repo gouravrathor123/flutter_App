@@ -3,42 +3,35 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_app/views/Employee/OtpEmployee.dart';
+import 'package:flutter_app/views/Employee/DashboardEmployee.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-class PhoneEmployee extends StatefulWidget {
+class LoginEmployee extends StatefulWidget {
   @override
-  _PhoneEmployeeState createState() => _PhoneEmployeeState();
+  _LoginOwnerState createState() => _LoginOwnerState();
 }
 
-class _PhoneEmployeeState extends State<PhoneEmployee> {
+class _LoginOwnerState extends State<LoginEmployee> {
   bool _isLoading = false;
-  String value;
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
         .copyWith(statusBarColor: Colors.transparent));
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Phone Checking"),
-      ),
       body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.red, Colors.yellow],
-            begin: const FractionalOffset(0.0, 1.0),
-            end: const FractionalOffset(0.0, 1.0),
-            stops: [0.0, 1.0],
-            tileMode: TileMode.repeated,
-          ),
+              colors: [Colors.blue, Colors.teal],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter),
         ),
         child: _isLoading
             ? Center(child: CircularProgressIndicator())
             : ListView(
-                children: [
+                children: <Widget>[
+                  headerSection(),
                   textSection(),
                   buttonSection(),
                 ],
@@ -47,16 +40,16 @@ class _PhoneEmployeeState extends State<PhoneEmployee> {
     );
   }
 
-  getOTP(String phone) async {
+  signIn(String phone, pass) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonResponse = null;
 
     var response = await http.post(
-      "http://192.168.5.59:3005/employee/check",
+      "http://192.168.5.59:3005/employee/login",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{'phone': phone}),
+      body: jsonEncode(<String, String>{'phone': phone, 'password': pass}),
     );
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
@@ -69,7 +62,7 @@ class _PhoneEmployeeState extends State<PhoneEmployee> {
         sharedPreferences.setString("token", jsonResponse['token']);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
-                builder: (BuildContext context) => OtpEmployee(value: value)),
+                builder: (BuildContext context) => DashboardEmployee()),
             (Route<dynamic> route) => false);
       }
     } else {
@@ -87,40 +80,33 @@ class _PhoneEmployeeState extends State<PhoneEmployee> {
       padding: EdgeInsets.symmetric(horizontal: 15.0),
       margin: EdgeInsets.only(top: 15.0),
       child: RaisedButton(
-        // ignore: unrelated_type_equality_checks
-        onPressed: phoneController == ""
+        onPressed: phoneController.text == "" || passwordController.text == ""
             ? null
             : () {
                 setState(() {
                   _isLoading = true;
                 });
-                getOTP(phoneController.text);
+                signIn(phoneController.text, passwordController.text);
               },
         elevation: 0.0,
         color: Colors.purple,
-        child: Text("Get OTP", style: TextStyle(color: Colors.white70)),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(500.0)),
+        child: Text("Sign In", style: TextStyle(color: Colors.white70)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       ),
     );
   }
 
   final TextEditingController phoneController = new TextEditingController();
+  final TextEditingController passwordController = new TextEditingController();
 
   Container textSection() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
       child: Column(
         children: <Widget>[
-          SizedBox(height: 30.0),
           TextFormField(
             controller: phoneController,
-            autofocus: false,
             cursorColor: Colors.white,
-            onChanged: (text) {
-              value = text;
-            },
-            obscureText: true,
             style: TextStyle(color: Colors.white70),
             decoration: InputDecoration(
               icon: Icon(Icons.phone, color: Colors.white70),
@@ -130,8 +116,34 @@ class _PhoneEmployeeState extends State<PhoneEmployee> {
               hintStyle: TextStyle(color: Colors.white70),
             ),
           ),
+          SizedBox(height: 30.0),
+          TextFormField(
+            controller: passwordController,
+            cursorColor: Colors.white,
+            obscureText: true,
+            style: TextStyle(color: Colors.white70),
+            decoration: InputDecoration(
+              icon: Icon(Icons.lock, color: Colors.white70),
+              hintText: "Password",
+              border: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white70)),
+              hintStyle: TextStyle(color: Colors.white70),
+            ),
+          ),
         ],
       ),
+    );
+  }
+
+  Container headerSection() {
+    return Container(
+      margin: EdgeInsets.only(top: 50.0),
+      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
+      child: Text("Login as Employee",
+          style: TextStyle(
+              color: Colors.white70,
+              fontSize: 40.0,
+              fontWeight: FontWeight.bold)),
     );
   }
 }

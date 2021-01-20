@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/views/Employee/PhoneEmployee.dart';
 import 'package:flutter_app/views/Owner/LoginOwner.dart';
 import 'package:flutter_app/views/Owner/PhoneOwner.dart';
 
@@ -83,10 +84,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   textColor: Colors.white,
                   color: Colors.green,
                   onPressed: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => PhoneEmployee()),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PhoneEmployee()),
+                    );
                   },
                   child: Text("signup as employee"),
                 ),

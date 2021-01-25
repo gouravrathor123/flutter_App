@@ -52,7 +52,7 @@ class _PhoneOwnerState extends State<PhoneOwner> {
     var jsonResponse = null;
 
     var response = await http.post(
-      "http://192.168.5.59:3005/owner/check",
+      "http://192.168.5.62:3005/owner/check",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

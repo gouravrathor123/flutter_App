@@ -46,7 +46,7 @@ class _LoginOwnerState extends State<LoginOwner> {
     var jsonResponse = null;
 
     var response = await http.post(
-      "http://192.168.5.59:3005/owner/login",
+      "http://192.168.5.62:3005/owner/login",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

@@ -26,6 +26,7 @@ class _SignUpOwnerState extends State<SignUpOwner> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Personal Details"),
+        backgroundColor: Colors.teal,
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -121,6 +122,7 @@ class _SignUpOwnerState extends State<SignUpOwner> {
             },
             style: TextStyle(color: Colors.white70),
             decoration: InputDecoration(
+              helperText: "password length >= 7",
               icon: Icon(Icons.lock, color: Colors.white70),
               hintText: "Password",
               border: UnderlineInputBorder(

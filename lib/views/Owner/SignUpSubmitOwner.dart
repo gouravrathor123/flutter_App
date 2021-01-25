@@ -168,7 +168,7 @@ class _SignUpSubmitOwnerState extends State<SignUpSubmitOwner> {
     var jsonResponse = null;
 
     var response = await http.post(
-      "http://192.168.5.59:3005/owner",
+      "http://192.168.5.62:3005/owner",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

@@ -25,6 +25,7 @@ dependencies:
     sdk: flutter
   http: ^0.12.2
   shared_preferences: ^0.5.12+4
+  hover_effect: ^0.6.0
 
 
   # The following adds the Cupertino Icons font to your application.

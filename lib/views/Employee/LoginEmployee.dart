@@ -14,7 +14,7 @@ class LoginEmployee extends StatefulWidget {
 
 class _LoginOwnerState extends State<LoginEmployee> {
   bool _isLoading = false;
-
+  Object data;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
@@ -45,7 +45,7 @@ class _LoginOwnerState extends State<LoginEmployee> {
     var jsonResponse = null;
 
     var response = await http.post(
-      "http://192.168.5.59:3005/employee/login",
+      "http://192.168.5.62:3005/employee/login",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -55,6 +55,7 @@ class _LoginOwnerState extends State<LoginEmployee> {
       jsonResponse = json.decode(response.body);
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
+      data=response.body;
       if (jsonResponse != null) {
         setState(() {
           _isLoading = false;
@@ -62,7 +63,7 @@ class _LoginOwnerState extends State<LoginEmployee> {
         sharedPreferences.setString("token", jsonResponse['token']);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
-                builder: (BuildContext context) => DashboardEmployee()),
+                builder: (BuildContext context) => DashboardEmployee(data:data)),
             (Route<dynamic> route) => false);
       }
     } else {

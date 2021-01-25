@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/views/Employee/LoginEmployee.dart';
 import 'package:flutter_app/views/Employee/PhoneEmployee.dart';
 import 'package:flutter_app/views/Owner/LoginOwner.dart';
 import 'package:flutter_app/views/Owner/PhoneOwner.dart';
@@ -40,8 +41,6 @@ class _MyHomePageState extends State<MyHomePage> {
             colors: [Colors.red, Colors.yellow],
             begin: const FractionalOffset(0.0, 1.0),
             end: const FractionalOffset(0.0, 1.0),
-            stops: [0.0, 1.0],
-            tileMode: TileMode.repeated,
           ),
         ),
         child: Padding(
@@ -69,10 +68,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   textColor: Colors.white,
                   color: Colors.green,
                   onPressed: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => LoginEmployee()),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginEmployee()),
+                    );
                   },
                   child: Text("login as employee"),
                 ),

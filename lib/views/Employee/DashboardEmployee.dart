@@ -7,11 +7,13 @@ import 'package:flutter_app/views/Employee/Attendence.dart';
 import 'package:flutter_app/views/Employee/Catalog.dart';
 import 'package:flutter_app/views/Employee/Dailyreport.dart';
 import 'package:flutter_app/views/Employee/Directory.dart';
-import 'package:flutter_app/views/Employee/LoginEmployee.dart';
 import 'package:flutter_app/views/Employee/Profile.dart';
 import 'package:flutter_app/views/Employee/Tasks.dart';
 import 'package:flutter_app/views/Employee/Team.dart';
 import 'package:flutter_app/views/Employee/Todo.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardEmployee extends StatefulWidget {
   final Object data;
@@ -21,9 +23,16 @@ class DashboardEmployee extends StatefulWidget {
 }
 
 class _DashboardEmployeeState extends State<DashboardEmployee> {
+  Object to;
+  @override
+  void initState(){
+    super.initState();
+    getData();
+  }
+  final storage = FlutterSecureStorage();
   @override
   Widget build(BuildContext context) {
-    final String firstname = jsonDecode(widget.data)['result']['first_name'];
+    String firstname = jsonDecode(widget.data)['result']['first_name']+" "+jsonDecode(widget.data)['result']['last_name'];
     return Scaffold(
       drawer: Drawer(
         child: ListView(
@@ -45,13 +54,22 @@ class _DashboardEmployeeState extends State<DashboardEmployee> {
             ),
             ListTile(
               title: Text("Profile", style: TextStyle(fontSize: 24),),
+              trailing: Icon(Icons.launch,color: Colors.black),
               onTap: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context)=> Profile()));
               },
             ),
             ListTile(
+              title: Text("Settings", style: TextStyle(fontSize: 24),),
+              trailing: Icon(Icons.settings,color: Colors.black),
+              onTap: (){
+
+              },
+            ),
+            ListTile(
               title: Text("Sign Out", style: TextStyle(fontSize: 24),),
-              onTap: (){},
+              trailing: Icon(Icons.power_settings_new,color: Colors.black,),
+              onTap: null,
             )
           ],
         ),
@@ -71,7 +89,7 @@ class _DashboardEmployeeState extends State<DashboardEmployee> {
             Expanded(
               child: GestureDetector(
                 onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Todo()));
+                  todo();
                 },
                 child: Card(
                   color: Colors.black12,
@@ -192,7 +210,7 @@ class _DashboardEmployeeState extends State<DashboardEmployee> {
               Expanded(
                 child: GestureDetector(
                   onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=> Team()));                  },
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> Team()));},
                   child:Card(
                     color: Colors.black12,
                     child:Column(
@@ -208,5 +226,41 @@ class _DashboardEmployeeState extends State<DashboardEmployee> {
           ),
         ],),
       );
+  }
+
+  void getData() async {
+    var id = jsonDecode(widget.data)['result']['_id'];
+    print(id);
+    var res = await http.get("http://localhost:3005/employee/getprofile");
+    var r = json.decode(res.body);
+    print(r);
+  }
+
+  todo()async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    Map<String,dynamic> jsonResponse;
+
+    var response = await http.get(
+      "http://192.168.5.62:3005/todo/list/60091e39d119d65ec8d7810c",
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      to=response.body;
+      if (jsonResponse != null) {
+        setState(() {
+          // _isLoading = false;
+        });
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> Todo(to: to,)));
+      }
+    } else {
+      setState(() {
+        // _isLoading = false;
+      });
+    }
   }
 }

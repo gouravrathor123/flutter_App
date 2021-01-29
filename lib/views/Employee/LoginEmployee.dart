@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_app/views/Employee/DashboardEmployee.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginEmployee extends StatefulWidget {
   @override
@@ -15,6 +16,7 @@ class LoginEmployee extends StatefulWidget {
 class _LoginOwnerState extends State<LoginEmployee> {
   bool _isLoading = false;
   Object data;
+  final storage = FlutterSecureStorage();
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
@@ -42,7 +44,7 @@ class _LoginOwnerState extends State<LoginEmployee> {
 
   signIn(String phone, pass) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var jsonResponse = null;
+    Map<String,dynamic> jsonResponse;
 
     var response = await http.post(
       "http://192.168.5.62:3005/employee/login",
@@ -60,6 +62,7 @@ class _LoginOwnerState extends State<LoginEmployee> {
         setState(() {
           _isLoading = false;
         });
+        await storage.write(key: "token", value: jsonResponse["token"]);
         sharedPreferences.setString("token", jsonResponse['token']);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(

@@ -15,6 +15,7 @@ class _TodoState extends State<Todo> {
   @override
   Widget build(BuildContext context) {
     final l = jsonDecode(widget.to)["result"];
+    final String id = l[0]["owner"];
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
         .copyWith(statusBarColor: Colors.transparent));
     return Scaffold(
@@ -51,7 +52,7 @@ class _TodoState extends State<Todo> {
                           Padding(padding: EdgeInsets.all(8.0),
                             child: textSection(),),
                           Padding(padding: const EdgeInsets.all(8.0),
-                            child: buttonSection(),
+                            child: buttonSection(id),
                             ),
                         ],
                       ),
@@ -71,7 +72,7 @@ class _TodoState extends State<Todo> {
                 return ListTile(
                  title: Text(item["description"],style: TextStyle(fontSize: 30),),
                   trailing: Icon(Icons.delete,size: 30, ),onTap: (){
-                   delete();
+                   delete(id,item["_id"]);
                 },
                 );
               },
@@ -99,7 +100,7 @@ class _TodoState extends State<Todo> {
     );
   }
 
-  Container buttonSection(){
+  Container buttonSection(id){
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 40.0,
@@ -111,7 +112,7 @@ class _TodoState extends State<Todo> {
             ? null
             : () {
           setState(() {
-            add(todoController.text);
+            add(todoController.text,id);
           });
         },
         elevation: 0.0,
@@ -123,7 +124,7 @@ class _TodoState extends State<Todo> {
     );
   }
 
-  add(String tod) async{
+  add(String tod, String id) async{
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonResponse = null;
 
@@ -139,7 +140,7 @@ class _TodoState extends State<Todo> {
       }),
     );
     if (response.statusCode == 200) {
-      todo();
+      todo(id);
       jsonResponse = json.decode(response.body);
       // print('Response status: ${response.statusCode}');
       // print('Response body: ${response.body}');
@@ -158,12 +159,12 @@ class _TodoState extends State<Todo> {
       });
     }
   }
-  todo()async{
+  todo(String ram)async{
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     Map<String,dynamic> jsonResponse;
 
     var response = await http.get(
-      "http://192.168.5.62:3005/todo/list/60091e39d119d65ec8d7810c",
+      "http://192.168.5.62:3005/todo/list/${ram}",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -184,16 +185,16 @@ class _TodoState extends State<Todo> {
       });
     }
   }
-  delete()async {
+  delete(String id,String id1)async {
     var jsonResponse = null;
 
     var response = await http.delete(
-      "http://192.168.5.62:3005/todo/delete/601280c5f522b121282500d1",
+      "http://192.168.5.62:3005/todo/delete/${id1}",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       });
     if (response.statusCode == 200) {
-      todo();
+      todo(id);
       jsonResponse = json.decode(response.body);
       // print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');

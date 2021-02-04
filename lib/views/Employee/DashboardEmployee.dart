@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/main.dart';
 import 'package:flutter_app/views/Employee/Account.dart';
 import 'package:flutter_app/views/Employee/Attendence.dart';
 import 'package:flutter_app/views/Employee/Catalog.dart';
@@ -13,7 +14,6 @@ import 'package:flutter_app/views/Employee/Team.dart';
 import 'package:flutter_app/views/Employee/Todo.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardEmployee extends StatefulWidget {
   final Object data;
@@ -24,6 +24,7 @@ class DashboardEmployee extends StatefulWidget {
 
 class _DashboardEmployeeState extends State<DashboardEmployee> {
   Object to;
+  String emp;
   @override
   void initState(){
     super.initState();
@@ -237,25 +238,25 @@ class _DashboardEmployeeState extends State<DashboardEmployee> {
   }
 
   todo()async{
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     Map<String,dynamic> jsonResponse;
-
+    String id = jsonDecode(widget.data)['result']['_id'].toString();
+    String lo = Global.local;
     var response = await http.get(
-      "http://192.168.5.62:3005/todo/list/60091e39d119d65ec8d7810c",
+      "http://$lo:3005/todo/list/$id",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      print('Response to: ${response.body}');
+      print(id);
       to=response.body;
       if (jsonResponse != null) {
         setState(() {
           // _isLoading = false;
         });
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> Todo(to: to,)));
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> Todo(to:to,emp:id)));
       }
     } else {
       setState(() {

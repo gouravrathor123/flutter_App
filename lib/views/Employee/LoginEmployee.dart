@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/main.dart';
 import 'package:flutter_app/views/Employee/DashboardEmployee.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,10 +11,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginEmployee extends StatefulWidget {
   @override
-  _LoginOwnerState createState() => _LoginOwnerState();
+  _LoginEmployeeState createState() => _LoginEmployeeState();
 }
 
-class _LoginOwnerState extends State<LoginEmployee> {
+class _LoginEmployeeState extends State<LoginEmployee> {
   bool _isLoading = false;
   Object data;
   final storage = FlutterSecureStorage();
@@ -45,9 +46,9 @@ class _LoginOwnerState extends State<LoginEmployee> {
   signIn(String phone, pass) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     Map<String,dynamic> jsonResponse;
-
+    String lo = Global.local;
     var response = await http.post(
-      "http://192.168.5.62:3005/employee/login",
+      "http://$lo:3005/employee/login",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

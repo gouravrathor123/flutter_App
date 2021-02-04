@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/main.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,7 +16,7 @@ class LoginOwner extends StatefulWidget {
 
 class _LoginOwnerState extends State<LoginOwner> {
   bool _isLoading = false;
-
+  Object data;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
@@ -44,14 +45,15 @@ class _LoginOwnerState extends State<LoginOwner> {
   signIn(String phone, pass) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonResponse = null;
-
+    String lo = Global.local;
     var response = await http.post(
-      "http://192.168.5.62:3005/owner/login",
+      "http://$lo:3005/owner/login",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{'phone': phone, 'password': pass}),
     );
+    data = response.body;
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
       print('Response status: ${response.statusCode}');
@@ -63,7 +65,7 @@ class _LoginOwnerState extends State<LoginOwner> {
         sharedPreferences.setString("token", jsonResponse['token']);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
-                builder: (BuildContext context) => DashboardOwner()),
+                builder: (BuildContext context) => DashboardOwner(data:data)),
             (Route<dynamic> route) => false);
       }
     } else {

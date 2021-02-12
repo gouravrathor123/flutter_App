@@ -16,7 +16,7 @@ class LoginOwner extends StatefulWidget {
 
 class _LoginOwnerState extends State<LoginOwner> {
   bool _isLoading = false;
-  Object data;
+  String token,ownerId;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
@@ -44,7 +44,7 @@ class _LoginOwnerState extends State<LoginOwner> {
 
   signIn(String phone, pass) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var jsonResponse = null;
+    var jsonResponse;
     String lo = Global.local;
     var response = await http.post(
       "http://$lo:3005/owner/login",
@@ -53,7 +53,6 @@ class _LoginOwnerState extends State<LoginOwner> {
       },
       body: jsonEncode(<String, String>{'phone': phone, 'password': pass}),
     );
-    data = response.body;
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
       print('Response status: ${response.statusCode}');
@@ -62,17 +61,20 @@ class _LoginOwnerState extends State<LoginOwner> {
         setState(() {
           _isLoading = false;
         });
-        sharedPreferences.setString("token", jsonResponse['token']);
+        token=jsonResponse['token'];
+        ownerId=jsonResponse['result']['_id'];
+        // print("the token passsed is $token");
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
-                builder: (BuildContext context) => DashboardOwner(data:data)),
+                builder: (BuildContext context) => DashboardOwner(token: token,ownerId: ownerId,)),
             (Route<dynamic> route) => false);
+        // print("the token passed is $token");
       }
     } else {
       setState(() {
         _isLoading = false;
       });
-      print(response.body);
+      // print(response.body);
     }
   }
 

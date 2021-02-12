@@ -115,5 +115,5 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class Global {
-  static final local = "192.168.43.106";
+  static final local = "192.168.5.34";
 }

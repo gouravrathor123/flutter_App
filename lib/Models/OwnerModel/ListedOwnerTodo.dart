@@ -1,4 +1,3 @@
-import 'package:flutter_app/Models/OwnerModel/OwnerData.dart';
 import 'package:flutter_app/Models/OwnerModel/OwnerTodo.dart';
 import 'package:json_annotation/json_annotation.dart';
 

@@ -249,7 +249,7 @@ class _TodoState extends State<Todo> {
   }
 
   delete(String id, String todoId) async {
-    var jsonResponse;
+    // var jsonResponse;
     String lo = Global.local;
     var response = await http.delete("http://$lo:3005/todo/delete/$todoId",
         headers: <String, String>{
@@ -257,14 +257,14 @@ class _TodoState extends State<Todo> {
         });
     if (response.statusCode == 200) {
       getData();
-      jsonResponse = json.decode(response.body);
+      // jsonResponse = json.decode(response.body);
       // print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
     }
   }
 
   add(String tod, String id) async {
-    var jsonResponse;
+    // var jsonResponse;
     String lo = Global.local;
     var response = await http.post(
       "http://$lo:3005/todo",
@@ -276,7 +276,7 @@ class _TodoState extends State<Todo> {
     );
     if (response.statusCode == 200) {
       getData();
-      jsonResponse = json.decode(response.body);
+      // jsonResponse = json.decode(response.body);
     }
   }
 
@@ -309,7 +309,7 @@ class _TodoState extends State<Todo> {
   }
 
   update(String updatedDes, String ownerId, String todoId, bool complete) async {
-    var jsonResponse;
+    // var jsonResponse;
     String lo = Global.local;
     var response = await http.put(
       "http://$lo:3005/todo/update/$todoId",
@@ -325,7 +325,7 @@ class _TodoState extends State<Todo> {
     );
     if (response.statusCode == 200) {
       getData();
-      jsonResponse = json.decode(response.body);
+      // jsonResponse = json.decode(response.body);
       print('Response body: ${response.body}');
     }
   }

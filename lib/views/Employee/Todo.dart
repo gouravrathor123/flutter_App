@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
 import 'package:http/http.dart'as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
 class Todo extends StatefulWidget {
@@ -217,7 +216,6 @@ class _TodoState extends State<Todo> {
   }
 
     delete(String id,String id1)async {
-    var jsonResponse = null;
     String lo = Global.local;
     print(lo);
     var response = await http.delete(
@@ -227,15 +225,12 @@ class _TodoState extends State<Todo> {
       });
     if (response.statusCode == 200) {
       todo(id);
-      jsonResponse = json.decode(response.body);
       // print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
     }
   }
 
     add(String tod, String id) async{
-      SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-      var jsonResponse = null;
       String lo = Global.local;
       var response = await http.post(
         "http://$lo:3005/todo",
@@ -250,12 +245,12 @@ class _TodoState extends State<Todo> {
       );
       if (response.statusCode == 200) {
         todo(id);
-        jsonResponse = json.decode(response.body);
+        // jsonResponse = json.decode(response.body);
       }
     }
   //update
     update(String tod,String id,String id1,bool complete)async{
-  var jsonResponse = null;
+  // var jsonResponse;
   String lo = Global.local;
   var response = await http.put(
       "http://$lo:3005/todo/update/$id1",
@@ -271,7 +266,7 @@ class _TodoState extends State<Todo> {
   );
   if (response.statusCode == 200) {
     todo(id);
-    jsonResponse = json.decode(response.body);
+    // jsonResponse = json.decode(response.body);
     // print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
   }

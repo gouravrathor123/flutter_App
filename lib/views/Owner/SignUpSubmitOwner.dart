@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/main.dart';
 import 'package:flutter_app/views/Owner/LoginOwner.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,6 +18,7 @@ class SignUpSubmitOwner extends StatefulWidget {
       this.pass,
       this.dob,
       this.phonee});
+  String lo = Global.local;
   @override
   _SignUpSubmitOwnerState createState() =>
       _SignUpSubmitOwnerState(firstName, lastName, email, pass, dob, phonee);
@@ -59,6 +61,7 @@ class _SignUpSubmitOwnerState extends State<SignUpSubmitOwner> {
     );
   }
 
+  // ignore: non_constant_identifier_names
   final TextEditingController CINController = new TextEditingController();
   final TextEditingController indutryController = new TextEditingController();
   final TextEditingController addressController = new TextEditingController();
@@ -163,12 +166,13 @@ class _SignUpSubmitOwnerState extends State<SignUpSubmitOwner> {
 
   // ignore: non_constant_identifier_names
   signUp(
+      // ignore: non_constant_identifier_names
       String companyName, String industry, String CIN, String address) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var jsonResponse = null;
+    var jsonResponse;
 
     var response = await http.post(
-      "http://192.168.5.62:3005/owner",
+      "http://${widget.lo}:3005/owner",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

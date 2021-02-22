@@ -212,7 +212,7 @@ class _SignUpEmployeeState extends State<SignUpEmployee> {
   signUp(String firstName, String lastName, String occupation, String dob,
       String email, String pass, String companyCode) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var jsonResponse = null;
+    var jsonResponse;
 
     var response = await http.post(
       "http://192.168.5.62:3005/employee",

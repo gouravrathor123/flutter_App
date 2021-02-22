@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Text("login as owner"),
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
                 RaisedButton(
                   padding: const EdgeInsets.all(10),
@@ -76,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Text("login as employee"),
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
                 RaisedButton(
                   padding: const EdgeInsets.all(10),
@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Text("signup as employee"),
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
                 RaisedButton(
                   padding: const EdgeInsets.all(10),
@@ -115,5 +115,5 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class Global {
-  static final local = "192.168.5.34";
+  static final local = "192.168.5.7";
 }

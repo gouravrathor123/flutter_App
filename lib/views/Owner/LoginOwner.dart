@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/main.dart';
+import 'package:flutter_app/views/Owner/ForgetPassword.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'DashboardOwner.dart';
 
@@ -16,7 +16,8 @@ class LoginOwner extends StatefulWidget {
 
 class _LoginOwnerState extends State<LoginOwner> {
   bool _isLoading = false;
-  String token,ownerId;
+  String token, ownerId;
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
@@ -36,6 +37,20 @@ class _LoginOwnerState extends State<LoginOwner> {
                   headerSection(),
                   textSection(),
                   buttonSection(),
+                  SizedBox(height: 30,),
+                  Center(
+                    child: InkWell(
+                      child: Text("forget password",style: TextStyle(fontSize: 20,decoration: TextDecoration.underline),),
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ForgetPassword(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ],
               ),
       ),
@@ -43,7 +58,6 @@ class _LoginOwnerState extends State<LoginOwner> {
   }
 
   signIn(String phone, pass) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonResponse;
     String lo = Global.local;
     var response = await http.post(
@@ -61,14 +75,15 @@ class _LoginOwnerState extends State<LoginOwner> {
         setState(() {
           _isLoading = false;
         });
-        token=jsonResponse['token'];
-        ownerId=jsonResponse['result']['_id'];
-        // print("the token passsed is $token");
+        token = jsonResponse['token'];
+        ownerId = jsonResponse['result']['_id'];
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
-                builder: (BuildContext context) => DashboardOwner(token: token,ownerId: ownerId,)),
+                builder: (BuildContext context) => DashboardOwner(
+                      token: token,
+                      ownerId: ownerId,
+                    )),
             (Route<dynamic> route) => false);
-        // print("the token passed is $token");
       }
     } else {
       setState(() {

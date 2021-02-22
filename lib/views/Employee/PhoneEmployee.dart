@@ -49,7 +49,7 @@ class _PhoneEmployeeState extends State<PhoneEmployee> {
 
   getOTP(String phone) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var jsonResponse = null;
+    var jsonResponse;
 
     var response = await http.post(
       "http://192.168.5.62:3005/employee/check",

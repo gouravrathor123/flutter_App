@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Models/OwnerModel/NestedOwnerData.dart';
 import 'package:flutter_app/views/Owner/OTasks.dart';
+import 'package:flutter_app/views/Owner/OTeam.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_app/views/Owner/OTodo.dart';
 
 import '../../main.dart';
+import 'ODailyReports.dart';
 
 // ignore: must_be_immutable
 class DashboardOwner extends StatefulWidget {
@@ -14,12 +16,13 @@ class DashboardOwner extends StatefulWidget {
 
   DashboardOwner({this.token, this.ownerId});
 
+  String lo = Global.local;
+
   @override
   _DashboardOwnerState createState() => _DashboardOwnerState();
 }
 
 class _DashboardOwnerState extends State<DashboardOwner> {
-  // NestedData main = NestedData();
   NestedOwnerData main = NestedOwnerData();
 
   @override
@@ -42,7 +45,6 @@ class _DashboardOwnerState extends State<DashboardOwner> {
     setState(() {
       main = NestedOwnerData.fromJson(r);
     });
-    print("the id of the owner is ${widget.ownerId}");
   }
 
   @override
@@ -98,7 +100,9 @@ class _DashboardOwnerState extends State<DashboardOwner> {
                 Icons.power_settings_new,
                 color: Colors.black,
               ),
-              onTap: null,
+              onTap: () {
+                signout();
+              },
             )
           ],
         ),
@@ -116,11 +120,13 @@ class _DashboardOwnerState extends State<DashboardOwner> {
                   child: GestureDetector(
                     onTap: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Todo(
-                                    ownerid: widget.ownerId,
-                                  )));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Todo(
+                            ownerid: widget.ownerId,
+                          ),
+                        ),
+                      );
                     },
                     child: Card(
                       color: Colors.black12,
@@ -172,7 +178,7 @@ class _DashboardOwnerState extends State<DashboardOwner> {
                         MaterialPageRoute(
                           builder: (context) => Tasks(
                             ownerId: widget.ownerId,
-                            token:main.result.token,
+                            token: widget.token,
                           ),
                         ),
                       );
@@ -194,7 +200,15 @@ class _DashboardOwnerState extends State<DashboardOwner> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      // Navigator.push(context, MaterialPageRoute(builder: (context)=> Dailyreport()));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DailyReports(
+                            ownerId: widget.ownerId,
+                            token: widget.token,
+                          ),
+                        ),
+                      );
                     },
                     child: Card(
                       color: Colors.black12,
@@ -282,7 +296,15 @@ class _DashboardOwnerState extends State<DashboardOwner> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      // Navigator.push(context, MaterialPageRoute(builder: (context)=> Team()));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => OwnerTeam(
+                            ownerId: widget.ownerId,
+                            token: widget.token,
+                          ),
+                        ),
+                      );
                     },
                     child: Card(
                       color: Colors.black12,
@@ -306,50 +328,15 @@ class _DashboardOwnerState extends State<DashboardOwner> {
     );
   }
 
-// todo()async{
-//   // Map<String,dynamic> jsonResponse;
-//   // String id = main.result.id;
-//   // String lo = Global.local;
-//   // var response = await http.get(
-//   //   "http://$lo:3005/todo/list/$id",
-//   //   headers: <String, String>{
-//   //     'Content-Type': 'application/json; charset=UTF-8',
-//   //   },
-//   // );
-//   // if (response.statusCode == 200) {
-//   //   jsonResponse = json.decode(response.body);
-//   //   print('Response to: ${response.body}');
-//   //   print(id);
-//   //   to=response.body;
-//   //   if (jsonResponse != null) {
-//   //     setState(() {
-//   //       // _isLoading = false;
-//   //     });
-//       Navigator.push(context, MaterialPageRoute(builder: (context)=> Todo(ownerid: main.result.id,)));
-//       print("the owner id is ${main.result.id}");
-//     // }
-//   // } else {
-//   //   setState(() {
-//   //     // _isLoading = false;
-//   //   });
-//   // }
-// }
-
-// task()async{
-//   Map<String,dynamic> jsonResponse;
-//   String id = main.result.id;
-//   String lo = Global.local;
-//   var response = await http.get(
-//     "http://$lo:3005/owner/getAllTask/",
-//     headers: <String, String>{
-//       'Content-Type': 'application/json; charset=UTF-8',
-//       'Authorization': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDFiOWViNTE1YmRlYzNjYjA1M2U5ZjkiLCJpYXQiOjE2MTI0MjkyMDZ9.-YQMJOLPlXnF2grr86lO3n-k-mlgaif3ExDovNWX_Ik"
-//     },
-//   );
-//   list=response.body;
-//   print("the value of list is $list");
-//   Navigator.push(context, MaterialPageRoute(builder: (context)=> Tasks(id:id,list:list)));
-// }
+  void signout() async {
+    var res = await http.post(
+      "http://${widget.lo}:3005/owner/logout",
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': widget.token.toString()
+      },
+    );
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+        MyHomePage()), (Route<dynamic> route) => false);
+  }
 }
-// 9977633229
-// ms. preeti kothari

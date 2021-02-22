@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Models/OwnerModel/NestedTaskData.dart';
 import 'package:http/http.dart' as http;
 // import 'OTasks.dart';
 
@@ -10,10 +11,7 @@ import '../../main.dart';
 // ignore: must_be_immutable
 class TaskAbout extends StatefulWidget {
   String id;
-  Object data;
-
-  TaskAbout({this.id, this.data});
-
+  TaskAbout({this.id});
   @override
   _TaskAboutState createState() => _TaskAboutState();
 }
@@ -23,16 +21,34 @@ class _TaskAboutState extends State<TaskAbout> {
   TextEditingController titleController = new TextEditingController();
   TextEditingController descriptionController = new TextEditingController();
   TextEditingController dateController = new TextEditingController();
+  NestedTaskData taskData = NestedTaskData();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
+
+  getData()async{
+    var res = await http.get(
+      "http://$lo:3005/owner/getTaskById/${widget.id}",
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    var r = json.decode(res.body);
+    setState(() {
+      taskData = NestedTaskData.fromJson(r);
+    });
+    // print(taskData.result.title);
+  }
 
   @override
   Widget build(BuildContext context) {
-    String h = jsonDecode(widget.data)['result']['description'].toString();
-
-    var task = jsonDecode(widget.data)['result'];
-    var taskId = task['_id'];
     return Scaffold(
       appBar: AppBar(
-        title: Text(task['title']),
+        title: Text(taskData.result.title),
         actions: [
           PopupMenuButton<String>(
             itemBuilder: (BuildContext context) {
@@ -53,25 +69,26 @@ class _TaskAboutState extends State<TaskAbout> {
             },
             onSelected: (value) async {
               if (value == 'C') {
-                var response = await http.put(
-                  "http://$lo:3005/owner/editTask/$taskId",
+               await http.put(
+                  "http://$lo:3005/owner/editTask/${widget.id}",
                   headers: <String, String>{
                     'Content-Type': 'application/json; charset=UTF-8',
                   },
                   body: jsonEncode(
                     <String, String>{
-                      "title": task['title'],
-                      "description": task['description'],
+                      "title": taskData.result.title,
+                      "description": taskData.result.description,
                       "status": "true",
-                      "due_date": task['due_date'],
+                      "due_date": taskData.result.due_date,
                     },
                   ),
                 );
-                // print(response.body);
+                // print(res.body);
+                Navigator.of(context).pop();
               }
               if (value == 'D') {
-                var response = await http.delete(
-                  "http://$lo:3005/owner/deleteTask/$taskId",
+                await http.delete(
+                  "http://$lo:3005/owner/deleteTask/${widget.id}",
                   headers: <String, String>{
                     'Content-Type': 'application/json; charset=UTF-8',
                   },
@@ -104,19 +121,11 @@ class _TaskAboutState extends State<TaskAbout> {
                                 children: <Widget>[
                                   Padding(
                                     padding: EdgeInsets.all(8.0),
-                                    child: textSection1(task),
+                                    child: textSection1(),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: buttonSection1(
-                                      task,
-                                      () {
-                                        setState(() {
-                                          update(task);
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                    ),
+                                    child: buttonSection1(),
                                   ),
                                 ],
                               ),
@@ -130,38 +139,40 @@ class _TaskAboutState extends State<TaskAbout> {
           )
         ],
       ),
-      body: Column(
-        children: [
-          Text(
-            "Description",
-            style: TextStyle(fontSize: 15),
-          ),
-          Card(
-            child: Text(
-              task['description'],
-              style: TextStyle(fontSize: 20),
+      body: Center(
+        child: Column(
+          children: [
+            Text(
+              "Description",
+              style: TextStyle(fontSize: 15),
             ),
-            shadowColor: Colors.black,
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Text(
-            "Due Date",
-            style: TextStyle(fontSize: 15),
-          ),
-          Card(
-            child: Text(
-              task['due_date'],
-              style: TextStyle(fontSize: 20),
+            Card(
+              child: Text(
+                taskData.result.description,
+                style: TextStyle(fontSize: 20),
+              ),
+              shadowColor: Colors.black,
             ),
-          )
-        ],
+            SizedBox(
+              height: 20,
+            ),
+            Text(
+              "Due Date",
+              style: TextStyle(fontSize: 15),
+            ),
+            Card(
+              child: Text(
+                taskData.result.due_date,
+                style: TextStyle(fontSize: 20),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
 
-  Container textSection1(dynamic task) {
+  Container textSection1() {
     return Container(
       child: Column(
         children: [
@@ -207,22 +218,22 @@ class _TaskAboutState extends State<TaskAbout> {
     );
   }
 
-  Container buttonSection1(dynamic task, Function onClick) {
+  Container buttonSection1() {
     return Container(
       height: 40.0,
       padding: EdgeInsets.symmetric(horizontal: 15.0),
       margin: EdgeInsets.only(top: 15.0),
       child: RaisedButton(
-        onPressed: onClick,
+        onPressed: update,
         color: Colors.blueGrey,
         child: Text("Edit"),
       ),
     );
   }
 
-  update(dynamic task) async {
-    var response = await http.put(
-      "http://$lo:3005/owner/editTask/${task['_id']}",
+  update() async {
+    await http.put(
+      "http://$lo:3005/owner/editTask/${widget.id}",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -230,11 +241,12 @@ class _TaskAboutState extends State<TaskAbout> {
         <String, String>{
           "title": titleController.text,
           "description": descriptionController.text,
-          "status": "true",
+          "status": "false",
           "due_date": dateController.text,
         },
       ),
     );
+    Navigator.of(context).pop();
   }
 
   go(dynamic task) {

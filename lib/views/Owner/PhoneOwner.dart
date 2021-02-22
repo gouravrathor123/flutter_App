@@ -5,9 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../main.dart';
 import 'OtpOwner.dart';
 
+// ignore: must_be_immutable
 class PhoneOwner extends StatefulWidget {
+  String lo = Global.local;
   @override
   _PhoneOwnerState createState() => _PhoneOwnerState();
 }
@@ -49,10 +52,10 @@ class _PhoneOwnerState extends State<PhoneOwner> {
 
   getOTP(String phone) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var jsonResponse = null;
+    var jsonResponse;
 
     var response = await http.post(
-      "http://192.168.5.62:3005/owner/check",
+      "http://${widget.lo}:3005/owner/check",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/views/Owner/SignupOwner.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
 class OtpOwner extends StatefulWidget {
@@ -77,7 +76,6 @@ class _OtpOwnerState extends State<OtpOwner> {
   final TextEditingController otpController = new TextEditingController();
 
   getOTP(String otp) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     if (otp == "123") {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(

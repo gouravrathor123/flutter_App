@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/main.dart';
 import 'package:flutter_app/views/Employee/LoginEmployee.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,38 +11,28 @@ import 'package:shared_preferences/shared_preferences.dart';
 // ignore: must_be_immutable
 class SignUpEmployee extends StatefulWidget {
   String phonee;
+  String lo = Global.local;
+
   SignUpEmployee({this.phonee});
+
   @override
-  _SignUpEmployeeState createState() => _SignUpEmployeeState(phonee);
+  _SignUpEmployeeState createState() => _SignUpEmployeeState();
 }
 
 class _SignUpEmployeeState extends State<SignUpEmployee> {
-  bool _isLoading = false;
-  String phonee;
-  _SignUpEmployeeState(this.phonee);
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
         .copyWith(statusBarColor: Colors.transparent));
     return Scaffold(
+      backgroundColor: Colors.teal,
       appBar: AppBar(
         title: Text("Details"),
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.red, Colors.yellow],
-            begin: const FractionalOffset(0.0, 1.0),
-            end: const FractionalOffset(0.0, 1.0),
-            stops: [0.0, 1.0],
-            tileMode: TileMode.repeated,
-          ),
-        ),
-        child: _isLoading
-            ? Center(child: CircularProgressIndicator())
-            : ListView(
+        child:ListView(
                 children: [
                   textSection(),
                   buttonSection(),
@@ -51,15 +42,14 @@ class _SignUpEmployeeState extends State<SignUpEmployee> {
     );
   }
 
-  final TextEditingController firstNameController = new TextEditingController();
-  final TextEditingController lastNameController = new TextEditingController();
-  final TextEditingController occupationController =
-      new TextEditingController();
-  final TextEditingController dobController = new TextEditingController();
-  final TextEditingController emailController = new TextEditingController();
-  final TextEditingController passController = new TextEditingController();
-  final TextEditingController companyCodeController =
-      new TextEditingController();
+  TextEditingController firstNameController = new TextEditingController();
+  TextEditingController lastNameController = new TextEditingController();
+  TextEditingController occupationController = new TextEditingController();
+  TextEditingController dobController = new TextEditingController();
+  TextEditingController emailController = new TextEditingController();
+  TextEditingController passController = new TextEditingController();
+  TextEditingController companyCodeController = new TextEditingController();
+
   Container textSection() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
@@ -69,92 +59,94 @@ class _SignUpEmployeeState extends State<SignUpEmployee> {
           TextFormField(
             controller: firstNameController,
             cursorColor: Colors.white,
-            style: TextStyle(color: Colors.white70),
+            style: TextStyle(color: Colors.white),
             decoration: InputDecoration(
-              icon: Icon(Icons.create_outlined, color: Colors.white70),
+              icon: Icon(Icons.create_outlined, color: Colors.white),
               hintText: "First Name",
               border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70)),
-              hintStyle: TextStyle(color: Colors.white70),
+                borderSide: BorderSide(color: Colors.white),
+              ),
+              hintStyle: TextStyle(color: Colors.white),
             ),
           ),
           SizedBox(height: 20),
           TextFormField(
             controller: lastNameController,
             cursorColor: Colors.white,
-            style: TextStyle(color: Colors.white70),
+            style: TextStyle(color: Colors.white),
             decoration: InputDecoration(
-              icon: Icon(Icons.create, color: Colors.white70),
+              icon: Icon(Icons.create, color: Colors.white),
               hintText: "Last Name",
               border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70)),
-              hintStyle: TextStyle(color: Colors.white70),
+                borderSide: BorderSide(color: Colors.white),
+              ),
+              hintStyle: TextStyle(color: Colors.white),
             ),
           ),
           SizedBox(height: 20),
           TextFormField(
             controller: occupationController,
             cursorColor: Colors.white,
-            style: TextStyle(color: Colors.white70),
+            style: TextStyle(color: Colors.white),
             decoration: InputDecoration(
               icon: Icon(Icons.home_repair_service_rounded,
-                  color: Colors.white70),
+                  color: Colors.white),
               hintText: "Occupation",
               border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70)),
-              hintStyle: TextStyle(color: Colors.white70),
+                  borderSide: BorderSide(color: Colors.white),),
+              hintStyle: TextStyle(color: Colors.white),
             ),
           ),
           SizedBox(height: 20),
           TextFormField(
             controller: dobController,
             cursorColor: Colors.white,
-            style: TextStyle(color: Colors.white70),
+            style: TextStyle(color: Colors.white),
             decoration: InputDecoration(
-              icon: Icon(Icons.date_range, color: Colors.white70),
+              icon: Icon(Icons.date_range, color: Colors.white),
               hintText: "Date of Birth",
               border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70)),
-              hintStyle: TextStyle(color: Colors.white70),
+                  borderSide: BorderSide(color: Colors.white),),
+              hintStyle: TextStyle(color: Colors.white),
             ),
           ),
           SizedBox(height: 20),
           TextFormField(
             controller: emailController,
             cursorColor: Colors.white,
-            style: TextStyle(color: Colors.white70),
+            style: TextStyle(color: Colors.white),
             decoration: InputDecoration(
-              icon: Icon(Icons.email, color: Colors.white70),
+              icon: Icon(Icons.email, color: Colors.white),
               hintText: "Email",
               border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70)),
-              hintStyle: TextStyle(color: Colors.white70),
+                  borderSide: BorderSide(color: Colors.white),),
+              hintStyle: TextStyle(color: Colors.white),
             ),
           ),
           SizedBox(height: 20),
           TextFormField(
             controller: passController,
             cursorColor: Colors.white,
-            style: TextStyle(color: Colors.white70),
+            style: TextStyle(color: Colors.white),
             decoration: InputDecoration(
-              icon: Icon(Icons.lock, color: Colors.white70),
+              icon: Icon(Icons.lock, color: Colors.white),
               hintText: "Password",
               border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70)),
-              hintStyle: TextStyle(color: Colors.white70),
+                  borderSide: BorderSide(color: Colors.white),),
+              hintStyle: TextStyle(color: Colors.white),
             ),
           ),
           SizedBox(height: 20),
           TextFormField(
             controller: companyCodeController,
             cursorColor: Colors.white,
-            style: TextStyle(color: Colors.white70),
+            style: TextStyle(color: Colors.white),
             decoration: InputDecoration(
-              icon: Icon(Icons.code, color: Colors.white70),
+              icon: Icon(Icons.code, color: Colors.white),
               hintText: "Company Code",
               border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70)),
-              hintStyle: TextStyle(color: Colors.white70),
+                  borderSide: BorderSide(color: Colors.white),),
+              hintStyle: TextStyle(color: Colors.white),
             ),
           ),
           SizedBox(height: 20),
@@ -171,34 +163,21 @@ class _SignUpEmployeeState extends State<SignUpEmployee> {
       margin: EdgeInsets.only(top: 15.0),
       child: RaisedButton(
         // ignore: unrelated_type_equality_checks
-        onPressed: firstNameController == "" ||
+        onPressed: firstNameController.text == "" ||
                 // ignore: unrelated_type_equality_checks
-                lastNameController == "" ||
+                lastNameController.text == "" ||
                 // ignore: unrelated_type_equality_checks
-                occupationController == "" ||
+                occupationController.text == "" ||
                 // ignore: unrelated_type_equality_checks
-                dobController == "" ||
+                dobController.text == "" ||
                 // ignore: unrelated_type_equality_checks
-                emailController == "" ||
+                emailController.text == "" ||
                 // ignore: unrelated_type_equality_checks
-                passController == "" ||
+                passController.text == "" ||
                 // ignore: unrelated_type_equality_checks
-                companyCodeController == ""
+                companyCodeController.text == ""
             ? null
-            : () {
-                setState(() {
-                  _isLoading = true;
-                });
-
-                signUp(
-                    firstNameController.text,
-                    lastNameController.text,
-                    occupationController.text,
-                    dobController.text,
-                    emailController.text,
-                    passController.text,
-                    companyCodeController.text);
-              },
+            : () {signUp();},
         elevation: 0.0,
         color: Colors.purple,
         child: Text("Sign Up", style: TextStyle(color: Colors.white70)),
@@ -209,47 +188,33 @@ class _SignUpEmployeeState extends State<SignUpEmployee> {
   }
 
   // ignore: non_constant_identifier_names
-  signUp(String firstName, String lastName, String occupation, String dob,
-      String email, String pass, String companyCode) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var jsonResponse;
-
+  signUp()async{
+    print("sign up was called");
+    print("${widget.lo}");
     var response = await http.post(
-      "http://192.168.5.62:3005/employee",
+      "http://${widget.lo}:3005/employee/",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
-        "first_name": firstName,
-        "last_name": lastName,
-        "date_of_birth": dob,
-        "email": email,
-        "phone": phonee,
-        "password": pass,
-        "company_code": companyCode,
+        "first_name": firstNameController.text,
+        "last_name": lastNameController.text,
+        "date_of_birth": dobController.text,
+        "email": emailController.text,
+        "phone": widget.phonee,
+        "password": passController.text,
+        "company_code": companyCodeController.text,
         "createdBy": "E",
-        "occupation": occupation
+        "occupation": occupationController.text,
       }),
     );
     if (response.statusCode == 200) {
-      jsonResponse = json.decode(response.body);
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
-      if (jsonResponse != null) {
-        setState(() {
-          _isLoading = false;
-        });
-        sharedPreferences.setString("token", jsonResponse['token']);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
                 builder: (BuildContext context) => LoginEmployee()),
             (Route<dynamic> route) => false);
       }
-    } else {
-      setState(() {
-        _isLoading = false;
-      });
-      print(response.body);
-    }
   }
 }

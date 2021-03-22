@@ -3,11 +3,14 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/main.dart';
 import 'package:flutter_app/views/Employee/OtpEmployee.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+// ignore: must_be_immutable
 class PhoneEmployee extends StatefulWidget {
+  String lo = Global.local;
   @override
   _PhoneEmployeeState createState() => _PhoneEmployeeState();
 }
@@ -23,26 +26,23 @@ class _PhoneEmployeeState extends State<PhoneEmployee> {
       appBar: AppBar(
         title: Text("Phone Checking"),
       ),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.red, Colors.yellow],
-            begin: const FractionalOffset(0.0, 1.0),
-            end: const FractionalOffset(0.0, 1.0),
-            stops: [0.0, 1.0],
-            tileMode: TileMode.repeated,
-          ),
-        ),
-        child: _isLoading
-            ? Center(child: CircularProgressIndicator())
-            : ListView(
-                children: [
-                  textSection(),
-                  buttonSection(),
-                ],
+      body: Center(
+        child: Container(
+          color: Colors.teal,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: _isLoading
+              ? Center(child: CircularProgressIndicator())
+              : Center(
+                child: Column(
+                  children: [
+                    SizedBox(height: 160,),
+                    textSection(),
+                    buttonSection(),
+                  ],
+                )
               ),
+        ),
       ),
     );
   }
@@ -52,7 +52,7 @@ class _PhoneEmployeeState extends State<PhoneEmployee> {
     var jsonResponse;
 
     var response = await http.post(
-      "http://192.168.5.62:3005/employee/check",
+      "http://${widget.lo}:3005/employee/check",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

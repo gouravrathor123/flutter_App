@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'OwnerData.dart';
+part of 'EmployeeData.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-OwnerData _$OwnerDataFromJson(Map<String, dynamic> json) {
-  return OwnerData(
+EmployeeData _$EmployeeDataFromJson(Map<String, dynamic> json) {
+  return EmployeeData(
     first_name: json['first_name'] as String,
     last_name: json['last_name'] as String,
     email: json['email'] as String,
@@ -16,7 +16,8 @@ OwnerData _$OwnerDataFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$OwnerDataToJson(OwnerData instance) => <String, dynamic>{
+Map<String, dynamic> _$EmployeeDataToJson(EmployeeData instance) =>
+    <String, dynamic>{
       'first_name': instance.first_name,
       'last_name': instance.last_name,
       'avatar': instance.avatar,

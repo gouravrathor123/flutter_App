@@ -87,7 +87,7 @@ class _TasksState extends State<Tasks> {
           bottom: TabBar(
             tabs: [
               Tab(
-                text: 'Incomplete Tasks',
+                text: 'Inprocess Tasks',
               ),
               Tab(
                 text: 'Completed Tasks',
@@ -162,11 +162,13 @@ class _TasksState extends State<Tasks> {
                     trailing: Icon(Icons.navigate_next),
                     onTap: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => TaskAbout(
-                                    id: item.id,
-                                  )));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TaskAbout(
+                            id: item.id,
+                          ),
+                        ),
+                      );
                     },
                   );
                 },
@@ -314,39 +316,35 @@ class _TasksState extends State<Tasks> {
     incomplete();
   }
 
-//   abouttask(String id) async {
-// //   Map<String, dynamic> jsonResponse;
-// //   String lo = Global.local;
-// //   var response = await http.get(
-// //     "http://$lo:3005/owner/getTaskById/$id",
-// //     headers: <String, String>{
-// //       'Content-Type': 'application/json; charset=UTF-8',
-// //     },
-// //   );
-// //   if (response.statusCode == 200) {
-// //     jsonResponse = json.decode(response.body);
-// //     data = response.body;
-// //     print('json Response is $jsonResponse');
-// //     if (jsonResponse != null) {
-// //       setState(() {
-// //         // _isLoading = false;
-// //       });
-// //       Navigator.push(
-// //         context,
-// //         MaterialPageRoute(
-// //           builder: (context) => TaskAbout(
-// //             id: id,
-// //             data: data,
-// //
-// //           ),
-// //         ),
-// //       );
-// //     }
-// //   } else {
-// //     setState(() {
-// //       // _isLoading = false;
-// //     });
-// //   }
-// // }
-//
+  abouttask(String id) async {
+    Map<String, dynamic> jsonResponse;
+    String lo = Global.local;
+    var response = await http.get(
+      "http://$lo:3005/owner/getTaskById/$id",
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+      print('json Response is $jsonResponse');
+      if (jsonResponse != null) {
+        setState(() {
+          // _isLoading = false;
+        });
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TaskAbout(
+              id: id,
+            ),
+          ),
+        );
+      }
+    } else {
+      setState(() {
+        // _isLoading = false;
+      });
+    }
+  }
 }

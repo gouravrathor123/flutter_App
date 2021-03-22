@@ -27,21 +27,14 @@ class _OtpEmployeeState extends State<OtpEmployee> {
         title: Text("OTP verification"),
       ),
       body: Container(
+        color: Colors.teal,
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.red, Colors.yellow],
-            begin: const FractionalOffset(0.0, 1.0),
-            end: const FractionalOffset(0.0, 1.0),
-            stops: [0.0, 1.0],
-            tileMode: TileMode.repeated,
-          ),
-        ),
         child: _isLoading
             ? Center(child: CircularProgressIndicator())
             : ListView(
                 children: [
+                  SizedBox(height: 160,),
                   textSection(),
                   buttonSection(),
                 ],

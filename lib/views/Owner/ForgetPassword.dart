@@ -6,6 +6,7 @@ import 'package:flutter_app/main.dart';
 import 'package:flutter_app/views/Owner/PassCode.dart';
 import 'package:http/http.dart' as http;
 
+// ignore: must_be_immutable
 class ForgetPassword extends StatefulWidget {
   String lo = Global.local;
   @override

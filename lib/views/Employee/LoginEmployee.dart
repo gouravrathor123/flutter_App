@@ -16,8 +16,8 @@ class LoginEmployee extends StatefulWidget {
 
 class _LoginEmployeeState extends State<LoginEmployee> {
   bool _isLoading = false;
-  Object data;
-  final storage = FlutterSecureStorage();
+  String token, empId;
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
@@ -44,8 +44,7 @@ class _LoginEmployeeState extends State<LoginEmployee> {
   }
 
   signIn(String phone, pass) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    Map<String,dynamic> jsonResponse;
+    Map<String, dynamic> jsonResponse;
     String lo = Global.local;
     var response = await http.post(
       "http://$lo:3005/employee/login",
@@ -56,18 +55,21 @@ class _LoginEmployeeState extends State<LoginEmployee> {
     );
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      data=response.body;
+      // print('Response status: ${response.statusCode}');
+      // print('Response body: ${response.body}');
+      token = jsonResponse['token'];
+      empId = jsonResponse['result']['_id'];
       if (jsonResponse != null) {
         setState(() {
           _isLoading = false;
         });
-        await storage.write(key: "token", value: jsonResponse["token"]);
-        sharedPreferences.setString("token", jsonResponse['token']);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
-                builder: (BuildContext context) => DashboardEmployee(data:data)),
+              builder: (BuildContext context) => DashboardEmployee(
+                token: token,
+                empId: empId,
+              ),
+            ),
             (Route<dynamic> route) => false);
       }
     } else {

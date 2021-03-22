@@ -272,7 +272,7 @@ class _TodoState extends State<Todo> {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(
-          <String, String>{"description": tod, "owner": id, "owner_type": "E"}),
+          <String, String>{"description": tod, "owner": id,}),
     );
     if (response.statusCode == 200) {
       getData();

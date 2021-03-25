@@ -208,9 +208,13 @@ class _DashboardEmployeeState extends State<DashboardEmployee> {
                   child: GestureDetector(
                     onTap: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Dailyreport()));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Dailyreport(
+                            token:widget.token
+                          ),
+                        ),
+                      );
                     },
                     child: Card(
                       color: Colors.black12,

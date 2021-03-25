@@ -10,7 +10,6 @@ import 'TaskAbout.dart';
 // ignore: must_be_immutable
 class Tasks extends StatefulWidget {
   String ownerId, token;
-
   Tasks({this.ownerId, this.token});
 
   @override
